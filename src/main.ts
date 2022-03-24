@@ -1,8 +1,8 @@
 import * as sharp from 'sharp';
 
-import { SvgElement, SvgScene, SVG_ELEMENTS_NAMES } from './interfaces';
 import * as fs from 'fs';
 import { get_svg_scene, scene_cm_to_px } from './scene.svg';
+import { get_scene_def } from './scene.def';
 
 /*
 ( sharp.default( {
@@ -60,172 +60,36 @@ const scene_def: SvgScene = {
     ],
 };
 */
+( async function () {
+    const scene_def_cm = await get_scene_def();
+    const scene_def_px = scene_cm_to_px( 300, scene_def_cm );
+    const scene_svg = get_svg_scene( scene_def_px );
+    const scene_svg_comic_sans = get_svg_scene( scene_def_px, false, 'Comic Sans MS' );
+    const scene_svg_ignore_inner = get_svg_scene( scene_def_px, true );
 
-const name_def: Array<SvgElement> = [
-    {
-        name: SVG_ELEMENTS_NAMES.label,
-        data: {
-            text: 'Name: ',
-            pos_x: 1,
-            pos_y: 2,
-            font_size: 1,
-            textLength: 6,
-        },
-    },
-    {
-        name: SVG_ELEMENTS_NAMES.box_input,
-        data: {
-            pos_x: 8,
-            pos_y: 1,
-            box_px_width: 1,
-            box_px_height: 1,
-            box_px_border: 0.1,
-            box_padding: 0.2,
-            len: 10,
-        },
-    },
-];
+    fs.writeFile( './output/scene_cm.json', JSON.stringify( scene_def_cm, null, 2 ), ( err ) => {
+        console.log( err );
+    } );
 
-const surname_def: Array<SvgElement> = [
-    {
-        name: SVG_ELEMENTS_NAMES.label,
-        data: {
-            text: 'Surname: ',
-            pos_x: 1,
-            pos_y: 3.5,
-            font_size: 1,
-            textLength: 6,
-        },
-    },
-    {
-        name: SVG_ELEMENTS_NAMES.box_input,
-        data: {
-            pos_x: 8,
-            pos_y: 2.5,
-            box_px_width: 1,
-            box_px_height: 1,
-            box_px_border: 0.1,
-            box_padding: 0.2,
-            len: 10,
-        },
-    },
-];
+    fs.writeFile( './output/scene_px.json', JSON.stringify( scene_def_px, null, 2 ), ( err ) => {
+        console.log( err );
+    } );
 
-const gender_def: Array<SvgElement> = [
-    {
-        name: SVG_ELEMENTS_NAMES.label,
-        data: {
-            text: 'Gender: ',
-            pos_x: 1,
-            pos_y: 5,
-            font_size: 1,
-            textLength: 6,
-        },
-    },
-    {
-        name: SVG_ELEMENTS_NAMES.label,
-        data: {
-            text: 'M',
-            pos_x: 9.5,
-            pos_y: 5,
-            font_size: 1,
-            textLength: 1,
-        },
-    },
-    {
-        name: SVG_ELEMENTS_NAMES.box_input,
-        data: {
-            pos_x: 8,
-            pos_y: 4,
-            box_px_width: 1,
-            box_px_height: 1,
-            box_px_border: 0.1,
-            box_padding: 0.2,
-            len: 1,
-        },
-    },
-    {
-        name: SVG_ELEMENTS_NAMES.label,
-        data: {
-            text: 'F',
-            pos_x: 15.5,
-            pos_y: 5,
-            font_size: 1,
-            textLength: 1,
-        },
-    },
-    {
-        name: SVG_ELEMENTS_NAMES.box_input,
-        data: {
-            pos_x: 14,
-            pos_y: 4,
-            box_px_width: 1,
-            box_px_height: 1,
-            box_px_border: 0.1,
-            box_padding: 0.2,
-            len: 1,
-        },
-    },
-];
+    fs.writeFile( './output/output.svg', scene_svg, ( err ) => {
+        console.log( err );
+    } );
 
-const photo_def: Array<SvgElement> = [
-    {
-        name: SVG_ELEMENTS_NAMES.label,
-        data: {
-            text: 'Photo: ',
-            pos_x: 1,
-            pos_y: 6.5,
-            font_size: 1,
-            textLength: 6,
-        },
-    },
-    {
-        name: SVG_ELEMENTS_NAMES.box_input,
-        data: {
-            pos_x: 8,
-            pos_y: 5.5,
-            box_px_width: 3,
-            box_px_height: 4,
-            box_px_border: 0.1,
-            box_padding: 0.2,
-            len: 1,
-        },
-    },
-];
+    sharp.default( Buffer.from( scene_svg ) ).png().toFile( './output/output.png' );
 
-const signature_def: Array<SvgElement> = [
-    {
-        name: SVG_ELEMENTS_NAMES.label,
-        data: {
-            text: 'Signature: ',
-            pos_x: 1,
-            pos_y: 27,
-            font_size: 1,
-            textLength: 6,
-        },
-    },
-    {
-        name: SVG_ELEMENTS_NAMES.box_input,
-        data: {
-            pos_x: 8,
-            pos_y: 26,
-            box_px_width: 4,
-            box_px_height: 2,
-            box_px_border: 0.1,
-            box_padding: 0.2,
-            len: 1,
-        },
-    },
-];
+    fs.writeFile( './output/clean_output.svg', scene_svg_ignore_inner, ( err ) => {
+        console.log( err );
+    } );
 
-const scene_def: SvgScene = {
-    width: 21,
-    height: 29.7,
-    elements: name_def.concat( surname_def ).concat( gender_def ).concat( photo_def ).concat( signature_def ),
-};
+    sharp.default( Buffer.from( scene_svg_ignore_inner ) ).png().toFile( './output/clean_output.png' );
 
-sharp.default( Buffer.from( get_svg_scene( scene_cm_to_px( 300, scene_def ) ) ) ).png().toFile( 'output.png' );
+    fs.writeFile( './output/comic_sans_output.svg', scene_svg_comic_sans, ( err ) => {
+        console.log( err );
+    } );
 
-fs.writeFile( 'output.svg', get_svg_scene( scene_def ), ( err ) => {
-    console.log( err );
-} );
+    sharp.default( Buffer.from( scene_svg_comic_sans ) ).png().toFile( './output/comic_sans_output.png' );
+} )();

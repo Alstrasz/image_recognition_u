@@ -3,14 +3,14 @@ import { get_svg_box_input } from './box_input.svg';
 import { SvgScene, SVG_ELEMENTS_NAMES } from './interfaces';
 import { get_svg_label } from './label.svg';
 
-export function get_svg_scene ( { width, height, elements }: SvgScene ) {
-    let acc: string = `<svg width="${width}" height="${height}"><rect width="100%" height="100%" fill="white" />`;
+export function get_svg_scene ( { width, height, elements }: SvgScene, ignore_inner: boolean = false, font: string = 'Arial, Helvetica, sans-serif' ) {
+    let acc: string = `<svg font-family="${font}" width="${width}" height="${height}"><rect width="100%" height="100%" fill="white" />`;
     for ( const el of elements ) {
         if ( el.name == SVG_ELEMENTS_NAMES.box ) {
-            acc += get_svg_box( el.data );
+            acc += get_svg_box( el.data, ignore_inner );
         }
         if ( el.name == SVG_ELEMENTS_NAMES.box_input ) {
-            acc += get_svg_box_input( el.data );
+            acc += get_svg_box_input( el.data, ignore_inner );
         }
         if ( el.name == SVG_ELEMENTS_NAMES.label ) {
             acc += get_svg_label( el.data );
@@ -41,6 +41,7 @@ export function scene_cm_to_px ( dpi: number, scene: SvgScene ) {
                     px_border: convert( el.data.px_border, cm_to_px ),
                     px_height: convert( el.data.px_height, cm_to_px ),
                     px_width: convert( el.data.px_width, cm_to_px ),
+                    body: el.data?.body,
                 },
             } );
         }
@@ -55,6 +56,7 @@ export function scene_cm_to_px ( dpi: number, scene: SvgScene ) {
                     box_px_height: convert( el.data.box_px_height, cm_to_px ),
                     box_px_border: convert( el.data.box_px_border, cm_to_px ),
                     box_padding: convert( el.data.box_padding, cm_to_px ),
+                    current_text: el.data?.current_text,
                 },
             } );
         }
