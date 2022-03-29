@@ -12,7 +12,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             data: {
                 text: 'Name: ',
                 pos_x: 1,
-                pos_y: 2,
+                pos_y: 4,
                 font_size: 1,
                 textLength: 6,
             },
@@ -21,7 +21,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             name: SVG_ELEMENTS_NAMES.box_input,
             data: {
                 pos_x: 8,
-                pos_y: 1,
+                pos_y: 3,
                 box_px_width: 1,
                 box_px_height: 1,
                 box_px_border: 0.1,
@@ -38,7 +38,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             data: {
                 text: 'Surname: ',
                 pos_x: 1,
-                pos_y: 3.5,
+                pos_y: 5.5,
                 font_size: 1,
                 textLength: 6,
             },
@@ -47,7 +47,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             name: SVG_ELEMENTS_NAMES.box_input,
             data: {
                 pos_x: 8,
-                pos_y: 2.5,
+                pos_y: 4.5,
                 box_px_width: 1,
                 box_px_height: 1,
                 box_px_border: 0.1,
@@ -64,7 +64,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             data: {
                 text: 'Gender: ',
                 pos_x: 1,
-                pos_y: 5,
+                pos_y: 7,
                 font_size: 1,
                 textLength: 6,
             },
@@ -73,7 +73,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             name: SVG_ELEMENTS_NAMES.box,
             data: {
                 pos_x: 8,
-                pos_y: 4,
+                pos_y: 6,
                 px_width: 1,
                 px_height: 1,
                 px_border: 0.1,
@@ -85,7 +85,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             data: {
                 text: 'M',
                 pos_x: 9.5,
-                pos_y: 5,
+                pos_y: 7,
                 font_size: 1,
                 textLength: 1,
             },
@@ -94,7 +94,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             name: SVG_ELEMENTS_NAMES.box,
             data: {
                 pos_x: 14,
-                pos_y: 4,
+                pos_y: 6,
                 px_width: 1,
                 px_height: 1,
                 px_border: 0.1,
@@ -105,7 +105,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             data: {
                 text: 'F',
                 pos_x: 15.5,
-                pos_y: 5,
+                pos_y: 7,
                 font_size: 1,
                 textLength: 1,
             },
@@ -118,7 +118,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             data: {
                 text: 'Photo: ',
                 pos_x: 1,
-                pos_y: 6.5,
+                pos_y: 8.5,
                 font_size: 1,
                 textLength: 6,
             },
@@ -127,7 +127,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             name: SVG_ELEMENTS_NAMES.box,
             data: {
                 pos_x: 8,
-                pos_y: 5.5,
+                pos_y: 7.5,
                 px_width: 3,
                 px_height: 4,
                 px_border: 0.1,
@@ -141,7 +141,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             data: {
                 text: 'Signature: ',
                 pos_x: 1,
-                pos_y: 27,
+                pos_y: 25,
                 font_size: 1,
                 textLength: 6,
             },
@@ -150,7 +150,7 @@ export async function get_scene_def (): Promise<SvgScene> {
             name: SVG_ELEMENTS_NAMES.box,
             data: {
                 pos_x: 8,
-                pos_y: 26,
+                pos_y: 24,
                 px_width: 4,
                 px_height: 2,
                 px_border: 0.1,
@@ -159,11 +159,59 @@ export async function get_scene_def (): Promise<SvgScene> {
         },
     ];
 
+    const filled_rect = '<rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,0,0);stroke:rgb(0,0,0)" />';
+    const border_box_def: Array<SvgElement> = [
+        {
+            name: SVG_ELEMENTS_NAMES.box,
+            data: {
+                pos_x: 1,
+                pos_y: 1,
+                px_width: 1.5,
+                px_height: 1.5,
+                px_border: 0.1,
+                body: filled_rect,
+            },
+        },
+        {
+            name: SVG_ELEMENTS_NAMES.box,
+            data: {
+                pos_x: 18.5,
+                pos_y: 1,
+                px_width: 1.5,
+                px_height: 1.5,
+                px_border: 0.1,
+                body: filled_rect,
+            },
+        },
+        {
+            name: SVG_ELEMENTS_NAMES.box,
+            data: {
+                pos_x: 1,
+                pos_y: 27.2,
+                px_width: 1.5,
+                px_height: 1.5,
+                px_border: 0.1,
+                body: filled_rect,
+            },
+        },
+        {
+            name: SVG_ELEMENTS_NAMES.box,
+            data: {
+                pos_x: 18.5,
+                pos_y: 27.2,
+                px_width: 1.5,
+                px_height: 1.5,
+                px_border: 0.1,
+                body: filled_rect,
+            },
+        },
+    ];
+
     return {
         width: 21,
         height: 29.7,
-        // elements: name_def.concat( surname_def ).concat( gender_def ).concat( photo_def ).concat( signature_def ),
-        elements: name_def.concat( surname_def ).concat( gender_def ).concat( signature_def ),
+        // elements: name_def.concat( surname_def ).concat( gender_def ).concat( photo_def ).concat( signature_def ).concat( border_box_def ),
+        elements: name_def.concat( surname_def ).concat( gender_def ).concat( signature_def ).concat( border_box_def ),
     };
 }
 
