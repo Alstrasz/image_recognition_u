@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { SvgElement, SvgScene, SVG_ELEMENTS_NAMES } from './interfaces';
 import { promises as fs } from 'fs';
+import { bezier } from './alphabet';
 
 export async function get_scene_def (): Promise<SvgScene> {
     const sig: string = await fs.readFile( './Brian_Sandoval_Sig.svg', 'utf-8' );

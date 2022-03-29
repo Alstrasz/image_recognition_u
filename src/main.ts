@@ -3,6 +3,7 @@ import * as sharp from 'sharp';
 import * as fs from 'fs';
 import { get_svg_scene, scene_cm_to_px } from './scene.svg';
 import { get_scene_def } from './scene.def';
+import { bezier } from './alphabet';
 
 /*
 ( sharp.default( {
@@ -65,6 +66,7 @@ const scene_def: SvgScene = {
     const scene_def_px = scene_cm_to_px( 300, scene_def_cm );
     const scene_svg = get_svg_scene( scene_def_px );
     const scene_svg_comic_sans = get_svg_scene( scene_def_px, false, 'Comic Sans MS' );
+    const scene_svg_custom_font = get_svg_scene( scene_def_px, false, 'Comic Sans MS', bezier );
     const scene_svg_ignore_inner = get_svg_scene( scene_def_px, true );
 
     fs.writeFile( './output/scene_cm.json', JSON.stringify( scene_def_cm, null, 2 ), ( err ) => {
@@ -92,4 +94,10 @@ const scene_def: SvgScene = {
     } );
 
     sharp.default( Buffer.from( scene_svg_comic_sans ) ).png().toFile( './output/comic_sans_output.png' );
+
+    fs.writeFile( './output/custom_font_output.svg', scene_svg_custom_font, ( err ) => {
+        console.log( err );
+    } );
+
+    sharp.default( Buffer.from( scene_svg_custom_font ) ).png().toFile( './output/custom_font_output.png' );
 } )();
