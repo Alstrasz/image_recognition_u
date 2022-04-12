@@ -159,7 +159,8 @@ export async function get_scene_def (): Promise<SvgScene> {
         },
     ];
 
-    const filled_rect = '<rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,0,0);stroke:rgb(0,0,0)" />';
+    //  const filled_rect = '<rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,0,0);stroke:rgb(0,0,0)" />';
+    const filled_rect = '<circle cx="50%" cy="50%" r="50%"/>';
     const border_box_def: Array<SvgElement> = [
         {
             name: SVG_ELEMENTS_NAMES.box,
@@ -168,7 +169,7 @@ export async function get_scene_def (): Promise<SvgScene> {
                 pos_y: 1,
                 px_width: 1.5,
                 px_height: 1.5,
-                px_border: 0.1,
+                px_border: 0,
                 body: filled_rect,
             },
         },
@@ -179,7 +180,7 @@ export async function get_scene_def (): Promise<SvgScene> {
                 pos_y: 1,
                 px_width: 1.5,
                 px_height: 1.5,
-                px_border: 0.1,
+                px_border: 0,
                 body: filled_rect,
             },
         },
@@ -190,7 +191,7 @@ export async function get_scene_def (): Promise<SvgScene> {
                 pos_y: 27.2,
                 px_width: 1.5,
                 px_height: 1.5,
-                px_border: 0.1,
+                px_border: 0,
                 body: filled_rect,
             },
         },
@@ -201,7 +202,7 @@ export async function get_scene_def (): Promise<SvgScene> {
                 pos_y: 27.2,
                 px_width: 1.5,
                 px_height: 1.5,
-                px_border: 0.1,
+                px_border: 0,
                 body: filled_rect,
             },
         },

@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { get_svg_scene, scene_cm_to_px } from './scene.svg';
 import { get_scene_def } from './scene.def';
 import { bezier } from './alphabet';
+import { ImageHandler } from './image_handler';
 
 /*
 ( sharp.default( {
@@ -99,5 +100,32 @@ const scene_def: SvgScene = {
         console.log( err );
     } );
 
+    sharp.default( Buffer.from( scene_svg_comic_sans ) ).rotate( 10, { background: 'rgba(255,255,255,255)' } ).png().toFile( './output/rotated_comic_sans_output.png' );
+
+    sharp.default( Buffer.from( scene_svg_comic_sans ) ).resize( Math.floor( scene_def_px.width * 0.8 ) ).png().toFile( './output/resized_comic_sans_output.png' );
+
     sharp.default( Buffer.from( scene_svg_custom_font ) ).png().toFile( './output/custom_font_output.png' );
+
+    const image = sharp.default( Buffer.from( scene_svg_comic_sans ) ).rotate( 10, { background: 'rgba(255,255,255,255)' } ).flatten().grayscale().threshold( 128 ).raw();
+    ( sharp.default( Buffer.from( scene_svg_custom_font ) ) as any ).affine( [[1, 0.3], [0.1, 0.7]], {
+        background: 'white',
+        interpolate: ( sharp as any ).interpolators.nohalo,
+    } ).png().toFile( './output/affine.png' );
+    const image_metadata = await image.metadata();
+    const imag_buffer = await image.toBuffer();
+    // eslint-disable-next-line max-len
+    sharp.default( imag_buffer, { raw: { width: image_metadata.width || scene_def_px.width, height: image_metadata.height || scene_def_px.width, channels: 1 } } ).png().toFile( './output/colored_tes2t.png' );
+    console.log( JSON.stringify( image_metadata, null, 2 ) );
+    console.log( new ImageHandler( image_metadata.width || scene_def_px.width, image_metadata.height || scene_def_px.height, imag_buffer ).get_keypints( 0, 4 ) );
+    console.log( imag_buffer.filter( ( elem ) => {
+        return elem == 255;
+    } ).length );
+    console.log( imag_buffer.filter( ( elem ) => {
+        return elem == 0;
+    } ).length );
+    console.log( imag_buffer.filter( ( elem ) => {
+        return elem > 0;
+    } ).length );
+    // eslint-disable-next-line max-len
+    sharp.default( imag_buffer, { raw: { width: image_metadata.width || scene_def_px.width, height: image_metadata.height || scene_def_px.width, channels: 1 } } ).png().toFile( './output/colored_test.png' );
 } )();
