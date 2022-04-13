@@ -77,35 +77,36 @@ export class ImageHandler {
                 ret.push( this.bfs( i, state ) );
             }
         }
-        console.log( ret[0] );
-        for ( const pos of ret[0].figure ) {
-            this.data[pos] = 127;
-        }
-        console.log( ret.length );
         return ret;
     }
 
     get_keypints ( area_rel_threshold: number, count: number ) {
         const figuers = this.run_bfs();
-        return figuers
-            .filter( ( elem ) => {
-                elem.rel > area_rel_threshold;
-            } )
+        const ret = figuers
+            // .filter( ( elem ) => {
+            //     return elem.rel >= area_rel_threshold;
+            // } )
             .sort( ( elem1, elem2 ) => {
-                return elem1.figure.length - elem2.figure.length;
+                return elem2.figure.length - elem1.figure.length;
             } )
-            .slice( 0, count )
-            .map( ( elem ) => {
-                let acc_x = 0;
-                let acc_y = 0;
-                for ( const pos of elem.figure ) {
-                    acc_x += pos % this.width;
-                    acc_y += Math.floor( pos / this.width );
-                }
-                return {
-                    x: acc_x / elem.figure.length,
-                    y: acc_y / elem.figure.length,
-                };
-            } );
+            .slice( 0, count );
+        for ( const fig of ret ) {
+            console.log( fig );
+            for ( const pos of fig.figure ) {
+                this.data[pos] = 127;
+            }
+        }
+        return ret.map( ( elem ) => {
+            let acc_x = 0;
+            let acc_y = 0;
+            for ( const pos of elem.figure ) {
+                acc_x += pos % this.width;
+                acc_y += Math.floor( pos / this.width );
+            }
+            return {
+                x: acc_x / elem.figure.length,
+                y: acc_y / elem.figure.length,
+            };
+        } );
     }
 }

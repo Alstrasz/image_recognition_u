@@ -1,10 +1,11 @@
 import * as sharp from 'sharp';
 
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import { get_svg_scene, scene_cm_to_px } from './scene.svg';
 import { get_scene_def } from './scene.def';
 import { bezier } from './alphabet';
 import { ImageHandler } from './image_handler';
+
 
 /*
 ( sharp.default( {
@@ -70,62 +71,39 @@ const scene_def: SvgScene = {
     const scene_svg_custom_font = get_svg_scene( scene_def_px, false, 'Comic Sans MS', bezier );
     const scene_svg_ignore_inner = get_svg_scene( scene_def_px, true );
 
-    fs.writeFile( './output/scene_cm.json', JSON.stringify( scene_def_cm, null, 2 ), ( err ) => {
-        console.log( err );
-    } );
+    await fs.writeFile( './output/scene_cm.json', JSON.stringify( scene_def_cm, null, 2 ) );
 
-    fs.writeFile( './output/scene_px.json', JSON.stringify( scene_def_px, null, 2 ), ( err ) => {
-        console.log( err );
-    } );
+    await fs.writeFile( './output/scene_px.json', JSON.stringify( scene_def_px, null, 2 ) );
 
-    fs.writeFile( './output/output.svg', scene_svg, ( err ) => {
-        console.log( err );
-    } );
+    await fs.writeFile( './output/output.svg', scene_svg );
 
-    sharp.default( Buffer.from( scene_svg ) ).png().toFile( './output/output.png' );
+    await sharp.default( Buffer.from( scene_svg ) ).png().toFile( './output/output.png' );
 
-    fs.writeFile( './output/clean_output.svg', scene_svg_ignore_inner, ( err ) => {
-        console.log( err );
-    } );
+    await fs.writeFile( './output/clean_output.svg', scene_svg_ignore_inner );
 
-    sharp.default( Buffer.from( scene_svg_ignore_inner ) ).png().toFile( './output/clean_output.png' );
+    await sharp.default( Buffer.from( scene_svg_ignore_inner ) ).png().toFile( './output/clean_output.png' );
 
-    fs.writeFile( './output/comic_sans_output.svg', scene_svg_comic_sans, ( err ) => {
-        console.log( err );
-    } );
+    await fs.writeFile( './output/comic_sans_output.svg', scene_svg_comic_sans );
 
-    sharp.default( Buffer.from( scene_svg_comic_sans ) ).png().toFile( './output/comic_sans_output.png' );
+    await sharp.default( Buffer.from( scene_svg_comic_sans ) ).png().toFile( './output/comic_sans_output.png' );
 
-    fs.writeFile( './output/custom_font_output.svg', scene_svg_custom_font, ( err ) => {
-        console.log( err );
-    } );
+    await fs.writeFile( './output/custom_font_output.svg', scene_svg_custom_font );
 
-    sharp.default( Buffer.from( scene_svg_comic_sans ) ).rotate( 10, { background: 'rgba(255,255,255,255)' } ).png().toFile( './output/rotated_comic_sans_output.png' );
+    await sharp.default( Buffer.from( scene_svg_comic_sans ) ).rotate( 10, { background: 'rgba(255,255,255,255)' } ).png().toFile( './output/rotated_comic_sans_output.png' );
 
-    sharp.default( Buffer.from( scene_svg_comic_sans ) ).resize( Math.floor( scene_def_px.width * 0.8 ) ).png().toFile( './output/resized_comic_sans_output.png' );
+    await sharp.default( Buffer.from( scene_svg_comic_sans ) ).resize( Math.floor( scene_def_px.width * 0.8 ) ).png().toFile( './output/resized_comic_sans_output.png' );
 
-    sharp.default( Buffer.from( scene_svg_custom_font ) ).png().toFile( './output/custom_font_output.png' );
+    await sharp.default( Buffer.from( scene_svg_custom_font ) ).png().toFile( './output/custom_font_output.png' );
 
-    const image = sharp.default( Buffer.from( scene_svg_comic_sans ) ).rotate( 10, { background: 'rgba(255,255,255,255)' } ).flatten().grayscale().threshold( 128 ).raw();
-    ( sharp.default( Buffer.from( scene_svg_custom_font ) ) as any ).affine( [[1, 0.3], [0.1, 0.7]], {
+    await ( sharp.default( Buffer.from( scene_svg_custom_font ) ) as any ).affine( [[1, 0.3], [0.1, 0.7]], {
         background: 'white',
         interpolate: ( sharp as any ).interpolators.nohalo,
-    } ).png().toFile( './output/affine.png' );
+    } ).png().toFile( './output/affine_custom_font_output.png' );
+    const image = sharp.default( './output/affine_custom_font_output.png' ).flatten().grayscale().threshold( 128 ).raw();
     const image_metadata = await image.metadata();
     const imag_buffer = await image.toBuffer();
-    // eslint-disable-next-line max-len
-    sharp.default( imag_buffer, { raw: { width: image_metadata.width || scene_def_px.width, height: image_metadata.height || scene_def_px.width, channels: 1 } } ).png().toFile( './output/colored_tes2t.png' );
-    console.log( JSON.stringify( image_metadata, null, 2 ) );
-    console.log( new ImageHandler( image_metadata.width || scene_def_px.width, image_metadata.height || scene_def_px.height, imag_buffer ).get_keypints( 0, 4 ) );
-    console.log( imag_buffer.filter( ( elem ) => {
-        return elem == 255;
-    } ).length );
-    console.log( imag_buffer.filter( ( elem ) => {
-        return elem == 0;
-    } ).length );
-    console.log( imag_buffer.filter( ( elem ) => {
-        return elem > 0;
-    } ).length );
-    // eslint-disable-next-line max-len
-    sharp.default( imag_buffer, { raw: { width: image_metadata.width || scene_def_px.width, height: image_metadata.height || scene_def_px.width, channels: 1 } } ).png().toFile( './output/colored_test.png' );
+    const image_handler = new ImageHandler( image_metadata.width || scene_def_px.width, image_metadata.height || scene_def_px.height, imag_buffer );
+    const keypoints = image_handler.get_keypints( 0, 4 );
+    sharp.default( image_handler.data, { raw: { width: image_handler.width, height: image_handler.height, channels: 1 } } ).png().toFile( './output/with_keypoints.png' );
+    fs.writeFile( './output/affine_keypoints.txt', JSON.stringify( keypoints, null, 2 ) );
 } )();
